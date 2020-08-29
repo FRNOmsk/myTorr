@@ -2,7 +2,7 @@
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-from collections import OrderedDict
+# from collections import OrderedDict
 
 def decode(filename):
     with open(filename, 'rb') as f:
@@ -19,12 +19,23 @@ def decode(filename):
         return None
     c = _data[_index:_index + 1]
     # return c
+
     if c == b'd':
         _index += 1
-        res = OrderedDict()
-        while _data[_index: _index + 1] != b'e':
-            _index += 1
-            print(_data[_index:_index+1])
+        colon = _data[_index:_index+1]
+        next_index = int(colon)
+        print(next_index)
+        _index = _data.index(b':', _index)
+        print(_index)
+        _index += 1
+        print(_data[_index:_index + next_index])
+
+        
+    #     res = OrderedDict()
+    #     while _data[_index: _index + 1] != b'e':
+    #         _index += 1
+    #         print(_data[_index:_index+1])
+
     # while _data[_index:_index + 1] != b'e':
     #     res = []
     #     res.append(_data[])
