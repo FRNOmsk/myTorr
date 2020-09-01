@@ -4,44 +4,35 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 # from collections import OrderedDict
 
-def decode(filename):
+def decode(self, filename):
     with open(filename, 'rb') as f:
         meta_info = f.read()
-        # meta_info = bencoding.Decoder(meta_info).decode()
-    # retunr meta_info
-
     if not isinstance(meta_info, bytes):
         raise TypeError('Argument "data" must be of type bytes')
-    _data = meta_info
-    _index = 0
-
-    if _index + 1 >= len(_data):
-        return None
-    c = _data[_index:_index + 1]
-    # return c
+    self._data = meta_info
+    self._index = 0
+    c = self._data[self._index:self._index + 1]
 
     if c == b'd':
-        _index += 1
-        colon = _data[_index:_index+1]
+        self._index += 1
+        colon = self._data[self._index:self._index+1]
         next_index = int(colon)
         print(next_index)
-        _index = _data.index(b':', _index)
-        print(_index)
-        _index += 1
-        print(_data[_index:_index + next_index])
+        self._index = self._data.index(b':', self._index)
+        print(self._index)
+        self._index += 1
+        print(self._data[self._index:self._index + next_index])
+        c = self._data[self._index + next_index:self._index + next_index+1]
+        self._index+=next_index
+    if c in b'0123456789':
+        _length = self._data.index(b':', self._index)
+        next_index = self._data[self._index:_length]
+        print(next_index)
 
-        
-    #     res = OrderedDict()
-    #     while _data[_index: _index + 1] != b'e':
-    #         _index += 1
-    #         print(_data[_index:_index+1])
+def _read_until(self, separated:bytes):
+    self.
 
-    # while _data[_index:_index + 1] != b'e':
-    #     res = []
-    #     res.append(_data[])
-    #     _index += 1
-
-    # return res
+def _read_str(self, length:int):
 
 
 
