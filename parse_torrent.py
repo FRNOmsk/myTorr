@@ -11,40 +11,54 @@ class Decode:
         self._index = 0
 
     def decode(self):
-
-        c = self.next_c()
-        if c == b'd':
-            self._index += 1
-            next_index = int(self._read_until(b':'))
-            print(self._data[self._index:self._index + next_index])
-            self._return(next_index)
-            # c = self._data[self._index + next_index:self._index + next_index + 1]
-            self._index += next_index
             c = self.next_c()
-        if c in b'0123456789':
-            next_index = int(self._read_until(b':'))
-            print(self._data[self._index:self._index + next_index])
-            self._return(next_index)
-            self._index += next_index
-            self.decode()
-        if c == b'l':
-            self._index += 1
-            res = []
-            while self._data[self._index:self._index + 1] != b'e':
-                res.append(self.decode())
-            # print(len(res))
-            self._index += 1
+            if c == b'd':
+                self._index += 1
+                return self._dict()
 
+            if c in b'0123456789':
+                return self._read_str()
+            if c == b'l':
+                self._index += 1
+                return self._list()
+            #     res = []
+            #     while self._data[self._index:self._index + 1] != b'e':
+            #         res.append(self.decode())
+            #     self._index += 1
+            #     return res
+
+
+    def _list(self):
+        resList = []
+        while self._data[self._index:self._index + 1] != b'e':
+            resList.append(self.decode())
+        self._index += 1
+        return resList
 
     def next_c(self):
         return self._data[self._index:self._index + 1]
+
+    def _dict(self):
+        resDict = OrderedDict()
+        while self._data[self._index: self._index + 1] != b'e':
+            key = self.decode()
+            obj = self.decode()
+            resDict[key] = obj
+        self._index += 1
+        return resDict
 
     def _read_until(self, separated:bytes) -> bytes:
         occurrence = self._data.index(separated, self._index)
         result = self._data[self._index: occurrence]
         self._index = occurrence + 1
         return result
-    def _return(self, next_index):
-        return self._data[self._index:self._index + next_index]
-    # def _read_str(self, length:int):
+
+    def _read(self, length):
+        res = self._data[self._index:self._index + length]
+        self._index += length
+        return res
+
+    def _read_str(self):
+        length = int(self._read_until(b':'))
+        return self._read(length)
 
