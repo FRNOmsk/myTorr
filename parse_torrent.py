@@ -15,17 +15,14 @@ class Decode:
             if c == b'd':
                 self._index += 1
                 return self._dict()
-
+            if c == b'i':
+                self._index += 1
+                return self._read_int()
             if c in b'0123456789':
                 return self._read_str()
             if c == b'l':
                 self._index += 1
                 return self._list()
-            #     res = []
-            #     while self._data[self._index:self._index + 1] != b'e':
-            #         res.append(self.decode())
-            #     self._index += 1
-            #     return res
 
 
     def _list(self):
@@ -34,6 +31,9 @@ class Decode:
             resList.append(self.decode())
         self._index += 1
         return resList
+
+    def _read_int(self):
+        return self._read_until(b'e')
 
     def next_c(self):
         return self._data[self._index:self._index + 1]
