@@ -1,13 +1,28 @@
-# This is a sample Python script.
+import asyncio
+import torrent
+import signal
+import logging
+from client import TorrentClient
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-# from collections import OrderedDict
-import parse_torrent
+from concurrent.futures import CancelledError
+
 def main():
-    parse_torrent.Decode('hunt.torrent').decode();
+    loop = asyncio.get_event_loop()
+    client = TorrentClient(torrent.Torrent('hunt.torrent'))
+    task = loop.create_task(client.start())
+    # print(client)
 
+    def signal_handler(*_):
+        logging.info('Exiting, please wait until everything is shutdown...')
+        client.stop()
+        task.cancel()
 
+    signal.signal(signal.SIGINT, signal_handler)
+
+    try:
+        loop.run_until_complete(task)
+    except CancelledError:
+        logging.warning('Event loop was canceled')
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
